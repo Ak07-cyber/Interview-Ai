@@ -12,9 +12,11 @@ app.use(cors({
 app.use(express.json());
 
 //importing the router handler
+import { authRouter } from "./routes/auth.routes.js";
 
 
 //assigning the route handler to the routes
+app.use("api/auth",authRouter);
 
 
 

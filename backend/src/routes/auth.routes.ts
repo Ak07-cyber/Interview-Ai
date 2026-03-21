@@ -1,13 +1,33 @@
 import { Router } from "express";
-//importing of controllers for the specific routes
-//importing the middleware for the protected endpoint
+import { registerUserController,LoginUserController,getMeController,logoutUserController } from "../controllers/auth.controller.js";
 
 export const authRouter=Router();
 
-//adding the jddocs multi line comment for each routes
+/**
+ * @route POST /api/auth/register
+ * @description Register a new user
+ * @access Public
+ */
+authRouter.post("/register",registerUserController);
 
-//login route
-//register
-//logout (token blacklisting)
-//get-me
+/**
+ * @route POST /api/auth/login
+ * @description  login user with email and password
+ * @access Public
+ */
+authRouter.post("/login",LoginUserController);
+
+/**
+ * @route POST /api/auth/logout
+ * @description clearing the token from user cookies and addding the token in the blacklist
+ * @access Public
+ */
+authRouter.get("/logout",logoutUserController);
+
+/**
+ * @route POST /api/auth/get-me
+ * @description gets the current logged in user details
+ * @access private
+ */
+authRouter.get("/get-me",getMeController);
 
