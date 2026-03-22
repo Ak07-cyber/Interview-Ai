@@ -1,5 +1,5 @@
-import cluster from "node:cluster";
-import os from "node:os";
+import cluster from "cluster";
+import os from "os";
 import dotenv from "dotenv";
 
 dotenv.config();
