@@ -166,7 +166,3 @@ export async function getMeController(req:Request,res:Response){
         }
     })
 }
-
-module.exports={
-    registerUserController
-}
