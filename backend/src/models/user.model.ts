@@ -10,13 +10,13 @@ const userSchema = new mongoose.Schema<user>({
     username:{
         type:String,
         required:true,
-        unique:[true,"username is already Taken"],
-        match:[/.+\@.+\..+/,"please provide a valid email"]
+        unique:[true,"username is already Taken"]
     },
     email:{
         type:String,
         required:[true,"email is requried"],
-        unique:[true,"email already taken"]
+        unique:[true,"email already taken"],
+        match:[/.+\@.+\..+/,"please provide a valid email"]
     },
     password:{
         type:String,

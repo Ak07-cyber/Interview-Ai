@@ -13,10 +13,12 @@ app.use(express.json());
 
 //importing the router handler
 import { authRouter } from "./routes/auth.routes.js";
+import {interviewRouter} from "./routes/interview.route.js";
 
 
 //assigning the route handler to the routes
-app.use("api/auth",authRouter);
+app.use("/api/auth",authRouter);
+app.use("/api/interview",interviewRouter);
 
 
 
