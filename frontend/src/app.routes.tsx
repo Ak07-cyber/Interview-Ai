@@ -1,12 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
+import Home from "./features/interview/pages/Home";
 //creating the sample pages of the login and the register
 
 export const router=createBrowserRouter([
     {
         path: "/",
-        element: <h1>Home Page</h1>
+        element: <Home/>
     },
     {
         path:"/register",

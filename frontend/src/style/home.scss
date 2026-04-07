@@ -1,0 +1,267 @@
+$bg-color: #121212;
+$card-bg: #1e1e1e;
+$text-primary: #ffffff;
+$text-secondary: #aaaaaa;
+$accent-color: #ff2a6d;
+$accent-gradient: linear-gradient(90deg, #ff8a8a, #ff2a6d);
+$border-color: #333333;
+$font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $bg-color;
+  color: $text-primary;
+  font-family: $font-stack;
+}
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 80px;
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 60px;
+}
+
+.left-section {
+  flex: 1;
+  max-width: 500px;
+
+  .portal-badge {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+
+    .line {
+      width: 40px;
+      height: 2px;
+      background-color: $accent-color;
+    }
+
+    .text {
+      color: $text-secondary;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+    }
+  }
+
+  .title {
+    font-size: 4rem;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 30px;
+
+    .highlight {
+      color: $accent-color;
+      font-style: italic;
+    }
+  }
+
+  .description {
+    color: $text-secondary;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 50px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 50px;
+
+    .stat-item {
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+      }
+
+      p {
+        color: $text-secondary;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
+
+.right-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submission-card {
+  background-color: $card-bg;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  .card-header {
+    margin-bottom: 35px;
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: $text-secondary;
+      font-size: 0.95rem;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 30px;
+
+    label {
+      display: block;
+      color: $text-secondary;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .upload-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid $border-color;
+      color: $text-secondary;
+      font-style: italic;
+      cursor: pointer;
+
+      .icon {
+        color: $accent-color;
+      }
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      background-color: #121212;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 15px;
+      color: $text-primary;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: none;
+
+      &::placeholder {
+        color: #555;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $border-color;
+      }
+    }
+
+    textarea {
+      height: 100px;
+    }
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: $accent-gradient;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid $border-color;
+    padding-top: 20px;
+    font-size: 0.75rem;
+    color: #666;
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        background-color: $accent-color;
+        border-radius: 50%;
+      }
+    }
+
+    .security {
+       letter-spacing: 1px;
+    }
+  }
+}
+
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  font-size: 0.75rem;
+  color: $text-secondary;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+  .logo {
+    font-weight: 700;
+    color: $text-primary;
+    letter-spacing: -0.5px;
+  }
+
+  .links {
+    display: flex;
+    gap: 30px;
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+      letter-spacing: 1px;
+      
+      &:hover {
+        color: $text-primary;
+      }
+    }
+  }
+
+  .copyright {
+    color: #555;
+  }
+}
