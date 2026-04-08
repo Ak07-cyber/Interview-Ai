@@ -10,11 +10,13 @@ import { tokenblacklistModel } from "../models/blacklist.model.js";
  * @access Public
 */
 export async function registerUserController(req:Request,res:Response){
+    console.log("Register req body: ", req.body);
     const {username,email,password}=req.body;
 
     if(!username ||!email ||!password){
         return res.status(400).json({
-            message:"please provide username, email and password"
+            message: "please provide username, email and password",
+            bodySent: req.body
         })
     }
 
@@ -40,6 +42,13 @@ export async function registerUserController(req:Request,res:Response){
             password:hashedPassword
         })
 
+        const token=jwt.sign(
+            {id:User._id,username:User.username},
+            process.env.JWT_SECRET as string,
+            {expiresIn:"1d"}
+        )
+
+        res.cookie("token",token)
         res.status(201).json({
             message:"user registered Successfully",
             User:{
