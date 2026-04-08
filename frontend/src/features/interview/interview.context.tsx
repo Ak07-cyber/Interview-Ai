@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import {createContext,useState} from React;
+import { createContext, useState } from "react";
 
-export const InterviewContext=createContext<any>();
+export const InterviewContext=createContext<any>(null);
 
 export const InterviewProvider=({children}:{ children: ReactNode })=>{
     const [loading,setLoading]=useState(false)

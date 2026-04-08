@@ -22,8 +22,9 @@ export const useAuth=()=>{ //custom hook
         try{
             const data=await login({email,password});
             setUser(data.User)
+            return true;
         }catch(error){
-
+            return false;
         }finally{
             setLoading(false); //this ensures that the user doesnt keep seeing the loading screen when the api calls fails
         }
@@ -34,8 +35,9 @@ export const useAuth=()=>{ //custom hook
         try{
             const data=await register({username,email,password});
             setUser(data.User)
+            return true;
         }catch(error){
-
+            return false;
         }finally{
             setLoading(false); //this ensures that the user doesnt keep seeing the loading screen when the api calls fails
         }

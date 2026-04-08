@@ -14,9 +14,11 @@ const Register = () => {
 
 
     const handleSubmit=async(e:any)=>{
-        e.prevent.default(); //prevents the default submit behaviour of the form
-        await handleRegister({username,email,password});
-        navigate("/");
+        e.preventDefault(); //prevents the default submit behaviour of the form
+        const success = await handleRegister({username,email,password});
+        if (success) {
+            navigate("/");
+        }
     }
 
     if(loading){
@@ -31,18 +33,21 @@ const Register = () => {
                 <div className='input-group'>
                     <label htmlFor='username'>Username</label>
                     <input 
+                    value={username}
                     onChange={(e)=>{setUsername(e.target.value)}}
                     id='username' name='username' type='text' placeholder='Enter your Username'/>
                 </div>
                 <div className='input-group'>
                     <label htmlFor='email'>email</label>
                     <input
+                    value={email}
                     onChange={(e)=>{setEmail(e.target.value)}}
                     id='email' name='email' type='text' placeholder='enter your email'/>
                 </div>
                 <div className='input-group'>
                     <label htmlFor='password'>Password</label>
                     <input
+                    value={password}
                     onChange={(e)=>{setPassword(e.target.value)}}
                     id='password' name='password' type='password' placeholder='enter your password'/>
                 </div>

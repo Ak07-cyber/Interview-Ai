@@ -11,7 +11,7 @@ const api=axios.create({
 
 export async function register({username,email,password}:auth){
     try{
-        const response=await api.post("api/auth/register",{
+        const response=await api.post("/api/auth/register",{
             username,
             email,
             password
@@ -20,12 +20,13 @@ export async function register({username,email,password}:auth){
         return response.data;
     }catch(error){
         console.log("error Occured during Register :",error);
+        throw error;
     }
 }
 
 export async function login({email,password}:auth){
     try{
-        const response=await api.post("api/auth/login",{
+        const response=await api.post("/api/auth/login",{
             email,
             password
         })
@@ -33,6 +34,7 @@ export async function login({email,password}:auth){
         return response.data;
     }catch(error){
         console.log("error  Occured during the Login")
+        throw error;
     }
 }
 
