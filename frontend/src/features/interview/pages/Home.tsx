@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { useInterview } from '../hooks/useInterview';
 import '../home.scss';
 
@@ -33,6 +33,8 @@ const Home = () => {
     }
   };
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleInitializeOptimization = async () => {
     if (!selectedFile) {
       alert("Please upload a resume file.");
@@ -43,24 +45,35 @@ const Home = () => {
       return;
     }
 
-    const report = await generateReport({
+    setError(null);
+    const result = await generateReport({
       jobDescription,
       selfDescription,
       resumeFile: selectedFile,
     });
 
-    if (report) {
-      navigate('/interview'); 
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    if (result.data) {
+      navigate(`/interview/${result.data._id}`); 
     }
   };
 
   return (
     <div className="home-container">
+      <header className="home-topbar">
+        <Link to="/" className="home-topbar__logo">Interview AI</Link>
+        <Link to="/reports" className="home-topbar__link">My Reports</Link>
+      </header>
+
       <main className="main-content">
         <div className="left-section">
           <div className="portal-badge">
             <span className="line"></span>
-            <span className="text">EDITORIAL PORTAL V2.0</span>
+            <span className="text">AI INTERVIEW PREP V2.0</span>
           </div>
           <h1 className="title">
             Optimize Your <br />
@@ -69,7 +82,7 @@ const Home = () => {
           <p className="description">
             Transform your professional narrative<br />
             through our algorithmic refining engine.<br />
-            Precision-engineered for the modern editor.
+            Precision-engineered for the modern candidate.
           </p>
           <div className="stats">
             <div className="stat-item">
@@ -108,16 +121,22 @@ const Home = () => {
   </div>
   <div className="form-group">
     <label>PROFESSIONAL SELF-DESCRIPTION</label>
-    <input 
-      type="text" 
-      placeholder="Your unique value proposition..." 
+    <textarea 
+      placeholder="Describe your skills, experience, and what makes you a strong candidate..."
       value={selfDescription}
       onChange={(e) => setSelfDescription(e.target.value)}
-    />
+      rows={3}
+    ></textarea>
   </div>
   <button className="submit-btn" onClick={handleInitializeOptimization} disabled={loading}>
     {loading ? "PROCESSING..." : "INITIALIZE OPTIMIZATION"} <span>→</span>
   </button>
+  {error && (
+    <div className="error-banner">
+      <span className="error-banner__icon">⚠️</span>
+      <span className="error-banner__text">{error}</span>
+    </div>
+  )}
 
             <div className="card-footer">
               <span className="status"><span className="dot"></span> SYSTEM READY</span>
@@ -128,7 +147,7 @@ const Home = () => {
       </main>
 
       <footer className="page-footer">
-        <div className="logo">NOCTURNAL EDITOR PORTAL</div>
+        <div className="logo">INTERVIEW AI</div>
         <div className="links">
           <a href="#">PRIVACY POLICY</a>
           <a href="#">TERMS OF SERVICE</a>
@@ -136,7 +155,7 @@ const Home = () => {
           <a href="#">CONTACT</a>
         </div>
         <div className="copyright">
-          © 2024 NOCTURNAL EDITOR PORTAL. ALL RIGHTS RESERVED.
+          © {new Date().getFullYear()} INTERVIEW AI. ALL RIGHTS RESERVED.
         </div>
       </footer>
     </div>

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { registerUserController,LoginUserController,getMeController,logoutUserController } from "../controllers/auth.controller.js";
+import { authmiddleware } from "../middlewares/auth.middleware.js";
 
 export const authRouter=Router();
 
@@ -18,16 +19,15 @@ authRouter.post("/register",registerUserController);
 authRouter.post("/login",LoginUserController);
 
 /**
- * @route POST /api/auth/logout
- * @description clearing the token from user cookies and addding the token in the blacklist
+ * @route GET /api/auth/logout
+ * @description clearing the token from user cookies and adding the token in the blacklist
  * @access Public
  */
 authRouter.get("/logout",logoutUserController);
 
 /**
- * @route POST /api/auth/get-me
+ * @route GET /api/auth/get-me
  * @description gets the current logged in user details
- * @access private
+ * @access Private
  */
-authRouter.get("/get-me",getMeController);
-
+authRouter.get("/get-me", authmiddleware, getMeController);

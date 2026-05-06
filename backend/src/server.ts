@@ -24,7 +24,8 @@ if (cluster.isPrimary) {
     //starting a db connection using the db conneciton funtion and makng the server to listen on the port 
     dbConnect();
 
-    app.listen(3000,()=>{
-        console.log(`server is listening on the port 3000 by worker ${process.pid}`);
+    const PORT = parseInt(process.env.PORT || "3000");
+    app.listen(PORT,()=>{
+        console.log(`server is listening on the port ${PORT} by worker ${process.pid}`);
     });
 }

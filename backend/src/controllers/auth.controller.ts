@@ -4,20 +4,46 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { tokenblacklistModel } from "../models/blacklist.model.js";
 
+// Shared cookie options for security
+const getCookieOptions = () => ({
+    httpOnly: true,      // Prevents JavaScript access (XSS protection)
+    secure: process.env.NODE_ENV === "production",  // HTTPS only in prod
+    sameSite: "strict" as const,  // CSRF protection
+    maxAge: 24 * 60 * 60 * 1000  // 1 day — matches JWT expiry
+});
+
 /**
  * @name registerUserController
  * @description registers a new User, expects Username, email and password in the request body
  * @access Public
 */
 export async function registerUserController(req:Request,res:Response){
-    console.log("Register req body: ", req.body);
     const {username,email,password}=req.body;
 
     if(!username ||!email ||!password){
         return res.status(400).json({
-            message: "please provide username, email and password",
-            bodySent: req.body
+            message: "Please provide username, email and password"
         })
+    }
+
+    // Input validation
+    if (typeof password !== "string" || password.length < 8) {
+        return res.status(400).json({
+            message: "Password must be at least 8 characters long"
+        });
+    }
+
+    if (typeof username !== "string" || username.length < 3 || username.length > 30) {
+        return res.status(400).json({
+            message: "Username must be between 3 and 30 characters"
+        });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (typeof email !== "string" || !emailRegex.test(email)) {
+        return res.status(400).json({
+            message: "Please provide a valid email address"
+        });
     }
 
     try{
@@ -28,7 +54,7 @@ export async function registerUserController(req:Request,res:Response){
 
         if(isUserAlreadyExists){//user already exits
             return res.status(400).json({
-                message:"Account already exits with this Username or email"
+                message:"Account already exists with this Username or email"
             })
         }
 
@@ -42,15 +68,19 @@ export async function registerUserController(req:Request,res:Response){
             password:hashedPassword
         })
 
+        if (!process.env.JWT_SECRET) {
+            throw new Error("JWT_SECRET environment variable is required");
+        }
+
         const token=jwt.sign(
             {id:User._id,username:User.username},
-            process.env.JWT_SECRET as string,
+            process.env.JWT_SECRET,
             {expiresIn:"1d"}
         )
 
-        res.cookie("token",token)
+        res.cookie("token", token, getCookieOptions());
         res.status(201).json({
-            message:"user registered Successfully",
+            message:"User registered successfully",
             User:{
                 id:User._id,
                 username:User.username,
@@ -58,9 +88,9 @@ export async function registerUserController(req:Request,res:Response){
             }
         })
     }catch(error){
-        console.log();
+        console.error("Error during registration:", error);
         return res.status(500).json({
-            message:"Internal Server error try again later"
+            message:"Internal Server error, try again later"
         })
     }
 
@@ -89,7 +119,7 @@ export async function LoginUserController(req:Request,res:Response){
 
         if(!User){
             return res.status(400).json({
-                message:"no user exist with email, please Register"
+                message:"Invalid email or password"
             })
         }
 
@@ -98,18 +128,22 @@ export async function LoginUserController(req:Request,res:Response){
 
         if(!isPasswordValid){//password didnt match
             return res.status(400).json({
-                message:"Invalid email or Password"
+                message:"Invalid email or password"
             })
+        }
+
+        if (!process.env.JWT_SECRET) {
+            throw new Error("JWT_SECRET environment variable is required");
         }
 
         //every check is passed providing the jwt token
         const token=jwt.sign(
             {id:User._id,username:User.username},
-            process.env.JWT_SECRET as string,
+            process.env.JWT_SECRET,
             {expiresIn:"1d"}
         )
 
-        res.cookie("token",token)
+        res.cookie("token", token, getCookieOptions());
         return res.status(200).json({
             message:"Login Successfully",
             User:{
@@ -120,7 +154,7 @@ export async function LoginUserController(req:Request,res:Response){
         })
 
     }catch(error){
-        console.log("error while login: ",error);
+        console.error("Error during login:", error);
         res.status(500).json({
             message:"Internal server error"
         })
@@ -141,7 +175,11 @@ export async function logoutUserController(req:Request,res:Response){
         })
     }
 
-    res.clearCookie(token);
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" as const,
+    });
 
     res.status(200).json({
         message:"User logout Successfully"  

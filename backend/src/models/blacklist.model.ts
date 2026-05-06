@@ -1,16 +1,17 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose from "mongoose";
 
-interface blacklist{
-    token:string
-}
-
-const blacklistTokenSchema:Schema<blacklist> =new mongoose.Schema({
+const blacklistTokenSchema = new mongoose.Schema({
     token:{
         type:String,
         required:[true,"token is required to be added in the blacklist"]
-    }},{
-        timestamps:true
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now,
+        expires:86400 // Auto-delete after 24 hours (matches JWT expiry)
     }
-)
+},{
+    timestamps:true
+})
 
 export const tokenblacklistModel=mongoose.model("blacklistTokens",blacklistTokenSchema);

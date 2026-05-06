@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import { intersection, type int } from "zod";
-import { tr } from "zod/locales";
 
 const questionSchema = new mongoose.Schema({
     question: {
@@ -72,7 +70,7 @@ export const interviewReportSchema = new mongoose.Schema({
     },
     technicalQuestions: [questionSchema],
     behavioralQuestions: [questionSchema],
-    skillgaps: [skillGapSchema],
+    skillGaps: [skillGapSchema],
     preparationPlan: [preparationPlanSchema],
     title: {
         type:String,

@@ -1,12 +1,7 @@
-//implementing the just the fucntion call which is responsible for making the call and function will be invoked in the hook layer (custom hook actions)
+//implementing the just the function call which is responsible for making the call and function will be invoked in the hook layer (custom hook actions)
 
-import axios from "axios";
+import api from "../../../api.client";
 import { type auth } from "../types/auth.types";
-
-const api=axios.create({
-    baseURL:"http://localhost:3000",
-    withCredentials:true
-})
 
 
 export async function register({username,email,password}:auth){
@@ -18,9 +13,9 @@ export async function register({username,email,password}:auth){
         })
 
         return response.data;
-    }catch(error){
-        console.log("error Occured during Register :",error);
-        throw error;
+    }catch(error:any){
+        const message = error?.response?.data?.message || "Registration failed. Please try again.";
+        throw new Error(message);
     }
 }
 
@@ -32,9 +27,9 @@ export async function login({email,password}:auth){
         })
 
         return response.data;
-    }catch(error){
-        console.log("error  Occured during the Login")
-        throw error;
+    }catch(error:any){
+        const message = error?.response?.data?.message || "Login failed. Please try again.";
+        throw new Error(message);
     }
 }
 
@@ -43,8 +38,9 @@ export async function logout() {
         const response=await api.get("/api/auth/logout");
 
         return response.data;
-    }catch(error){
-        console.log("error Occured while logging out :",error)
+    }catch(error:any){
+        const message = error?.response?.data?.message || "Logout failed.";
+        throw new Error(message);
     }
 }
 
@@ -54,6 +50,6 @@ export async function getMe() {
 
         return response.data;
     }catch(error){
-
+        throw error; // Let the caller handle this
     }
 }
