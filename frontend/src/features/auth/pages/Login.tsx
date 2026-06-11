@@ -31,29 +31,34 @@ const Login = () => {
     }
 
   return (
-    <main>
+    <main className="auth-page">
+        <div className="auth-page__orbs">
+            <div className="auth-page__orb auth-page__orb--1" />
+            <div className="auth-page__orb auth-page__orb--2" />
+            <div className="auth-page__orb auth-page__orb--3" />
+        </div>
         <div className='form-container'>
-            <h1>Login</h1>
-            <p className='form-subtitle'>Welcome back! Sign in to continue.</p>
+            <h1>Welcome Back</h1>
+            <p className='form-subtitle'>Sign in to continue your interview prep.</p>
             {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form className="auth-form" onSubmit={handleSubmit}>
                 <div className='input-group'>
-                    <label htmlFor='email'>Email</label>
+                    <label htmlFor='login-email'>Email</label>
                     <input
                     value={email}
                     onChange={(e)=>{setEmail(e.target.value)}}
-                    id='email' name='email' type='email' placeholder='Enter your email'/>
+                    id='login-email' name='email' type='email' placeholder='you@example.com'/>
                 </div>
                 <div className='input-group'>
-                    <label htmlFor='password'>Password</label>
+                    <label htmlFor='login-password'>Password</label>
                     <input
                     value={password}
                     onChange={(e)=>{setPassword(e.target.value)}}
-                    id='password' name='password' type='password' placeholder='Enter your password'/>
+                    id='login-password' name='password' type='password' placeholder='••••••••'/>
                 </div>
-                <button className='button primary-button' type='submit'>Login</button>
+                <button className='button primary-button' type='submit' style={{ width: '100%', marginTop: '0.5rem' }}>Sign In</button>
             </form>
-            <p className='form-link'>Don't have an account? <Link to="/register">Register here</Link></p>
+            <p className='form-link'>Don't have an account? <Link to="/register">Create one</Link></p>
         </div>
     </main>
   )

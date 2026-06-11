@@ -37,36 +37,50 @@ const Register = () => {
     }
 
   return (
-    <main>
+    <main className="auth-page">
+        <div className="auth-page__orbs">
+            <div className="auth-page__orb auth-page__orb--1" />
+            <div className="auth-page__orb auth-page__orb--2" />
+            <div className="auth-page__orb auth-page__orb--3" />
+        </div>
         <div className='form-container'>
-            <h1>Register</h1>
-            <p className='form-subtitle'>Create your account to get started.</p>
+            <h1>Create Account</h1>
+            <p className='form-subtitle'>Get started with AI-powered interview preparation.</p>
             {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form className="auth-form" onSubmit={handleSubmit}>
                 <div className='input-group'>
-                    <label htmlFor='username'>Username</label>
+                    <label htmlFor='reg-username'>Username</label>
                     <input 
                     value={username}
                     onChange={(e)=>{setUsername(e.target.value)}}
-                    id='username' name='username' type='text' placeholder='Enter your Username'/>
+                    id='reg-username' name='username' type='text' placeholder='johndoe'/>
                 </div>
                 <div className='input-group'>
-                    <label htmlFor='email'>Email</label>
+                    <label htmlFor='reg-email'>Email</label>
                     <input
                     value={email}
                     onChange={(e)=>{setEmail(e.target.value)}}
-                    id='email' name='email' type='email' placeholder='Enter your email'/>
+                    id='reg-email' name='email' type='email' placeholder='you@example.com'/>
                 </div>
                 <div className='input-group'>
-                    <label htmlFor='password'>Password</label>
+                    <label htmlFor='reg-password'>Password</label>
                     <input
                     value={password}
                     onChange={(e)=>{setPassword(e.target.value)}}
-                    id='password' name='password' type='password' placeholder='Enter your password (min 8 chars)'/>
+                    id='reg-password' name='password' type='password' placeholder='Min 8 characters'/>
+                    {password.length > 0 && (
+                        <div className="password-strength">
+                            <div className={`password-strength__bar ${
+                                password.length >= 12 ? 'password-strength__bar--strong' :
+                                password.length >= 8 ? 'password-strength__bar--good' :
+                                'password-strength__bar--weak'
+                            }`} style={{ width: `${Math.min(100, (password.length / 12) * 100)}%` }} />
+                        </div>
+                    )}
                 </div>
-                <button className='button primary-button' type='submit'>Register</button>
+                <button className='button primary-button' type='submit' style={{ width: '100%', marginTop: '0.5rem' }}>Create Account</button>
             </form>
-            <p className='form-link'>Already have an account? <Link to="/login">Login here</Link></p>
+            <p className='form-link'>Already have an account? <Link to="/login">Sign in</Link></p>
         </div>
     </main>
   )

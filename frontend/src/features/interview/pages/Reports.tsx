@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { useInterview } from '../hooks/useInterview';
+import { useTheme } from '../../theme.context';
 import LoadingSpinner from '../../LoadingSpinner';
 import '../reports.scss';
 
 const Reports = () => {
     const { reports, fetchReports, loading, downloadResume } = useInterview();
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         fetchReports();
@@ -17,6 +19,18 @@ const Reports = () => {
 
     return (
         <div className="reports-page">
+            <header className="reports-topbar">
+                <Link to="/" className="reports-topbar__logo">Interview AI</Link>
+                <div className="reports-topbar__actions">
+                    <Link to="/" className="button outline-button" style={{ padding: '8px 18px', fontSize: '0.85rem', textDecoration: 'none' }}>
+                        ← Back to Home
+                    </Link>
+                    <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
+                        {theme === 'dark' ? '☀️' : '🌙'}
+                    </button>
+                </div>
+            </header>
+
             <div className="reports-container">
                 <div className="reports-header">
                     <div>

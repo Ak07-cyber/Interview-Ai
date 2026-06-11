@@ -1,78 +1,78 @@
-/**this custom hook file handles all the business logic such as calling the api function and storing the data of the api response in the global store
- * showing the loading screen until the api response
- * the useEffect runs once when the component using this hook mounts checking if the user is already logged in
- * action dispatching (providing the handlers) 
- * this file might not be required but for easy debugging and clean code practice we do this and setting up the context across the entire application 
- * we can directly import the api function in the ui pages
-*/
+import { useContext, useEffect, useCallback } from "react";
+import { AuthContext } from "../auth.context";
+import axios from "axios";
 
-import { useContext,useEffect } from "react";
-import { AuthContext, type AuthContextType } from "../auth.context";
-import { login,register,getMe,logout } from "../services/auth.api";
-import { type auth } from "../types/auth.types";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-export const useAuth=()=>{ //custom hook
+const api = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+});
 
-    const context=useContext(AuthContext);
-    
+export const useAuth = () => {
+    const context = useContext(AuthContext);
     if (!context) {
         throw new Error("useAuth must be used within an AuthProvider");
     }
 
-    const {user,setUser,loading,setLoading} = context as AuthContextType;
+    const { user, setUser, loading, setLoading } = context;
 
-    //handling of the entire logic of the login page(handler)
-    const handleLogin=async({email,password}:auth): Promise<{ success: boolean; error?: string }>=>{
-        setLoading(true);
-        try{
-            const data=await login({email,password});
-            setUser(data.User)
-            return { success: true };
-        }catch(error:any){
-            return { success: false, error: error.message || "Login failed" };
-        }finally{
-            setLoading(false); //this ensures that the user doesnt keep seeing the loading screen when the api calls fails
-        }
-    }
-
-    const handleRegister=async({username,email,password}:auth): Promise<{ success: boolean; error?: string }>=>{
-        setLoading(true);
-        try{
-            const data=await register({username,email,password});
-            setUser(data.User)
-            return { success: true };
-        }catch(error:any){
-            return { success: false, error: error.message || "Registration failed" };
-        }finally{
-            setLoading(false); //this ensures that the user doesnt keep seeing the loading screen when the api calls fails
-        }
-    }
-
-    const handleLogout=async()=>{
-        setLoading(true);
-        try{
-            await logout();
-            setUser(null);
-        }catch(error){
-            console.error("Logout failed:", error);
-        }finally{
-            setLoading(false); //this ensures that the user doesnt keep seeing the loading screen when the api calls fails
-        }
-    }
-
-    useEffect(()=>{
-        const getandSetUser=async()=>{
-            try{
-                const data=await getMe();
-                setUser(data.user)
-            }catch(error){
-                // User is not logged in — this is expected on public pages
+    // Check if user is already authenticated on mount
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await api.get("/api/auth/get-me");
+                setUser(response.data.user);
+            } catch {
                 setUser(null);
-            }finally{(setLoading(false))}
+            } finally {
+                setLoading(false);
+            }
+        };
+        checkAuth();
+    }, []);
+
+    const handleLogin = useCallback(async ({ email, password }: { email: string; password: string }) => {
+        try {
+            setLoading(true);
+            const response = await api.post("/api/auth/login", { email, password });
+            setUser(response.data.User);
+            return { success: true };
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error)
+                ? error.response?.data?.message || "Login failed. Please try again."
+                : "Login failed. Please try again.";
+            return { success: false, error: message };
+        } finally {
+            setLoading(false);
         }
+    }, []);
 
-        getandSetUser();
-    },[])
+    const handleRegister = useCallback(async ({ username, email, password }: { username: string; email: string; password: string }) => {
+        try {
+            setLoading(true);
+            const response = await api.post("/api/auth/register", { username, email, password });
+            setUser(response.data.User);
+            return { success: true };
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error)
+                ? error.response?.data?.message || "Registration failed. Please try again."
+                : "Registration failed. Please try again.";
+            return { success: false, error: message };
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-    return {user,loading,handleLogin,handleRegister,handleLogout}
-}
+    const handleLogout = useCallback(async () => {
+        try {
+            await api.get("/api/auth/logout");
+        } catch {
+            // Ignore logout errors
+        } finally {
+            setUser(null);
+        }
+    }, []);
+
+    return { user, loading, handleLogin, handleRegister, handleLogout };
+};

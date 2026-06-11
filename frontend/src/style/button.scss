@@ -1,20 +1,83 @@
-.button{
-
+/* ── Unified Button System ──────────────────────────────────────── */
+.button {
     border: none;
     outline: none;
-    padding-inline: 1.5rem;
-    padding-block: 0.75rem;
-    border-radius: 1rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 12px;
     cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 
-    transition: all 0.3s ease-in-out;
-
-    &.primary-button{
-        background-color: #e1034d;
-        color: white;
+    &:active {
+        transform: scale(0.96);
     }
 
-    &:active{
-        transform: scale(0.9);
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Primary — gradient with glow */
+    &.primary-button {
+        background: var(--accent-gradient);
+        color: #fff;
+        box-shadow: 0 4px 16px var(--accent-glow);
+
+        &:hover:not(:disabled) {
+            background: var(--accent-gradient-hover);
+            box-shadow: 0 6px 24px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0) scale(0.97);
+        }
+    }
+
+    /* Secondary — outlined accent */
+    &.secondary-button {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+
+        &:hover:not(:disabled) {
+            background: var(--accent-glow);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+    }
+
+    /* Outline — neutral */
+    &.outline-button {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+
+        &:hover:not(:disabled) {
+            border-color: var(--border-color-strong);
+            color: var(--text-primary);
+            background: var(--bg-surface-elevated);
+        }
+    }
+
+    /* Ghost — text only */
+    &.ghost-button {
+        background: transparent;
+        color: var(--text-secondary);
+        padding: 0.5rem 0.75rem;
+
+        &:hover:not(:disabled) {
+            color: var(--text-primary);
+            background: var(--bg-surface-elevated);
+        }
     }
 }

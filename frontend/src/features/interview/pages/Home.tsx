@@ -1,16 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useInterview } from '../hooks/useInterview';
+import { useTheme } from '../../theme.context';
+import { useAuth } from '../../auth/hooks/useAuth';
 import '../home.scss';
 
 const Home = () => {
   const navigate = useNavigate();
   const { generateReport, loading } = useInterview();
+  const { theme, toggleTheme } = useTheme();
+  const { handleLogout } = useAuth();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [selfDescription, setSelfDescription] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const handleFileClick = () => {
     fileInputRef.current?.click();
@@ -24,10 +29,16 @@ const Home = () => {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       setSelectedFile(e.dataTransfer.files[0]);
     }
@@ -62,11 +73,24 @@ const Home = () => {
     }
   };
 
+  const onLogout = async () => {
+    await handleLogout();
+    navigate('/login');
+  };
+
   return (
     <div className="home-container">
       <header className="home-topbar">
         <Link to="/" className="home-topbar__logo">Interview AI</Link>
-        <Link to="/reports" className="home-topbar__link">My Reports</Link>
+        <div className="home-topbar__actions">
+          <Link to="/reports" className="home-topbar__link">My Reports</Link>
+          <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme" id="theme-toggle-btn">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <button className="button outline-button" onClick={onLogout} style={{ padding: '8px 18px', fontSize: '0.88rem' }}>
+            Logout
+          </button>
+        </div>
       </header>
 
       <main className="main-content">
@@ -105,38 +129,48 @@ const Home = () => {
 
             <div className="form-group">
               <label>RESUME / CV</label>
-              <div className="upload-box" onClick={handleFileClick} onDragOver={handleDragOver} onDrop={handleDrop}>
+              <div 
+                className={`upload-box ${isDragOver ? 'drag-over' : ''}`} 
+                onClick={handleFileClick} 
+                onDragOver={handleDragOver} 
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                id="resume-upload"
+              >
                 <span className="icon">📄</span>
-                <span className="placeholder">{selectedFile ? selectedFile.name : "Upload your file (PDF, DOCX)..."}</span> <input type="file" accept=".pdf,.doc,.docx" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
+                <span className="placeholder">{selectedFile ? selectedFile.name : "Drop your file here or click to browse..."}</span>
+                <input type="file" accept=".pdf,.doc,.docx" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
               </div>
             </div>
 
             <div className="form-group">
-    <label>TARGET JOB DESCRIPTION</label>
-    <textarea 
-      placeholder="Paste the target requirements here..."
-      value={jobDescription}
-      onChange={(e) => setJobDescription(e.target.value)}
-    ></textarea>
-  </div>
-  <div className="form-group">
-    <label>PROFESSIONAL SELF-DESCRIPTION</label>
-    <textarea 
-      placeholder="Describe your skills, experience, and what makes you a strong candidate..."
-      value={selfDescription}
-      onChange={(e) => setSelfDescription(e.target.value)}
-      rows={3}
-    ></textarea>
-  </div>
-  <button className="submit-btn" onClick={handleInitializeOptimization} disabled={loading}>
-    {loading ? "PROCESSING..." : "INITIALIZE OPTIMIZATION"} <span>→</span>
-  </button>
-  {error && (
-    <div className="error-banner">
-      <span className="error-banner__icon">⚠️</span>
-      <span className="error-banner__text">{error}</span>
-    </div>
-  )}
+              <label>TARGET JOB DESCRIPTION</label>
+              <textarea 
+                placeholder="Paste the target requirements here..."
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                id="job-description-input"
+              ></textarea>
+            </div>
+            <div className="form-group">
+              <label>PROFESSIONAL SELF-DESCRIPTION</label>
+              <textarea 
+                placeholder="Describe your skills, experience, and what makes you a strong candidate..."
+                value={selfDescription}
+                onChange={(e) => setSelfDescription(e.target.value)}
+                rows={3}
+                id="self-description-input"
+              ></textarea>
+            </div>
+            <button className="submit-btn" onClick={handleInitializeOptimization} disabled={loading} id="submit-btn">
+              {loading ? "PROCESSING..." : "INITIALIZE OPTIMIZATION"} <span>→</span>
+            </button>
+            {error && (
+              <div className="error-banner">
+                <span className="error-banner__icon">⚠️</span>
+                <span className="error-banner__text">{error}</span>
+              </div>
+            )}
 
             <div className="card-footer">
               <span className="status"><span className="dot"></span> SYSTEM READY</span>
